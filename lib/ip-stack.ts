@@ -4,9 +4,7 @@ import * as apigateway from "@aws-cdk/aws-apigateway";
 import * as route53 from "@aws-cdk/aws-route53";
 import * as targets from "@aws-cdk/aws-route53-targets";
 import { Certificate } from "@aws-cdk/aws-certificatemanager";
-import { execSync } from "child_process";
-import { existsSync, mkdirSync } from "fs";
-import { PythonFunction } from "@justin8-cdk/python-lambda";
+import { PythonFunction } from "@aws-cdk/aws-lambda-python";
 
 const domainName = "ip.dray.id.au";
 const certificateArn =
@@ -17,8 +15,9 @@ export class IpStack extends cdk.Stack {
     super(scope, id, props);
 
     const lambdaFunction = new PythonFunction(this, "ip", {
-      handler: "index.lambda_handler",
-      runtime: lambda.Runtime.PYTHON_3_8,
+      entry: "src/ip",
+      handler: "lambda_handler",
+      runtime: lambda.Runtime.PYTHON_3_7,
     });
 
     const certificate = Certificate.fromCertificateArn(
